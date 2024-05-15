@@ -41,7 +41,7 @@
 - the bugs are bad
 - the UI was designed for consoles
 - but all of this can be fixed…
-- because the game is moddable
+- because the game is moddable!
 
 ---
 
@@ -165,7 +165,7 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 
 ---
 
-# [fit] RE projects are **organized** and **professional**
+# [fit] RE projects are **organized** & **professional**
 
 - they're serious C++ experts
 - with a side helping of RE & x86 assembly experience
@@ -192,9 +192,29 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 
 - a reverse-engineered C++ library
 - everything we understand about the game engine and its classes
+- field structure/sizes and vtables; with types if a human has investigated
 - with tools for offset look-up
 - requires SKSE at runtime, not at compile time-- completely separate code & far more extensive
 - supports _all_ known game builds
+
+---
+
+# [fit] **xbyak** jitted assembly
+
+- injecting code at runtime
+- allows you to hook functions
+- can trampoline from original function to your code and back
+- CLib wraps all this up nicely so I didn't have to learn this
+
+---
+
+# [fit] What **native-code** mods do
+
+- call methods to get game information/state/events
+- insert your own functions before or after existing game functions
+- replace game functions entirely (more rarely)
+- example: my mod intercepts menu selection events, inventory changes
+- it also grabs the DX11 render context so it can draw a HUD
 
 ---
 
@@ -216,7 +236,7 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 - it uses **imgui** to draw UI not Flash
 - this is why it was fast
 - but other design decisions made it buggy
-- (and I hated how its customization worked…)
+- and I had an idea about how to do layout customization
 
 I can fix it, right?
 
@@ -238,6 +258,12 @@ I can fix it, right?
 
 ---
 
+# [fit] say hi to **Soulsy HUD**
+
+^ I can no longer imagine playing the game without it.
+
+---
+
 ![fit](assets/hud_closeup.jpeg)
 
 ---
@@ -246,13 +272,17 @@ I can fix it, right?
 
 ---
 
+slide on plugin structure / design here
+
+---
+
 # [fit] So how hard **was** it?
 
-It was harder than I thought, but not in the ways I thought it would be hard.
+It was harder than I thought, but not the way I expected.
 
 - Windows strings were a pain until I understood them
 - Skyrim internals are not always sensible
-- mod interactions made the problem far more complex than expected
+- mod interactions made the problem more complex than expected
 - had lots of bugs for a long time until it fell together
 - players asked for far more features than I thought I wanted (but they were right)
 
@@ -265,6 +295,8 @@ It was harder than I thought, but not in the ways I thought it would be hard.
 - found my favorite C++ mod authors and read all of their code
 - $%@! extra data & inventory what the what now?
 - a lot of trial and error
+
+^ I cannot overstate the importance of the skill of reading undocumented code and figuring out what it does.
 
 ---
 
@@ -295,7 +327,7 @@ This was a surprising challenge to me. I had not done a lot of development on Wi
 
 ![justfile-example.png](assets/justfile-example.png)
 
-^ Just, which I've introduced here, was an important part of my workflow. You can provide different versions of a single recipe for diff environments. I automated everything I could automate. CMake could handle all of this, I think, but I am so much more comfortable with bash that I gave in and did all of this with WSL.
+^ Just, which I've introduced here, was an important part of my workflow. You can provide different versions of a single recipe for diff environments. I automated everything I could automate. CMake could handle some of this, I think, and Powershell 7 the rest, but I am so much more comfortable with bash that I gave in and did all of this with WSL.
 
 ---
 
@@ -308,7 +340,7 @@ This was a surprising challenge to me. I had not done a lot of development on Wi
 - Scaleform/Flash translation strings are `UCS-2`
 - player crashes with encodings until I learned all this
 
-^ String handling in lower-level languages can be tricky because you have to think about ownership of the byte structure behind the string. That was not a problem in this project, but encodings were. Yes, I said UCS2-2. This is a fixed-width 16 byte encoding that is pretty old.
+^ String handling in lower-level languages are traditionally tricky because you have to think about ownership of the byte structure behind the string. That was not a problem in this project, but encodings were. UCS-2 is a fixed-width 16 byte encoding that is pretty old-- I had to cope. This is an example of how unfamiliarity with Windows presented me with a learning curve. It's trivia I had to pack into my brain.
 
 ---
 
@@ -356,14 +388,14 @@ Let's look at some code briefly!
 
 # [fit] plugins could be **100% Rust**
 
-Theoretically, I could reduce the C++ in my mod to just Rust bindings to CommonLibSSE-NG and the SKSE plugin entry point.
+Currently, Soulsy is 68.5% Rust. Theoretically, I could reduce the C++ down to Rust bindings to CommonLibSSE-NG and the SKSE plugin entry point, plus some xbyak glue.
 
 - **bindgen** is the path here
 - CLib is a moving target
 - I got a job instead of diving into this
 - gotta have a budget for graphics cards, you know?
 
-^ This project moved from 0% Rust to its current 68.5% Rust.
+^ Microsoft provides Rust bindings for nearly all of their APIs these days.
 
 ---
 
@@ -374,6 +406,8 @@ I found myself having persistent trouble with some design decisions.
 - careful flowcharting of what a cycle advance does when two-handed weapon is equipped; could handle grip-switch mods easily once I got this right
 - loading and rasterizing svgs
 - categorizing the many, many mod-added items
+
+^ The actual task of advancing cycles with edge case handling was a lot of careful work. I remember what is in each hand so advancing either hand and going from 2-hander to 1-hander restores what was in the other hand. This feels right in-game, but has lots of edge cases.
 
 ---
 
@@ -405,7 +439,9 @@ Two facets of performance:
 - perceived input latency
 - frame rate cost of the render loop
 
-Writing this as a native-code SKSE plugin obliterated the input latency problem. Imgui means it can be visually fast. This is why I started with the HUD mod I picked.
+Using a native-code SKSE plugin means doing both is _possible_, though bad programming can mess it up.
+
+^ Writing this as a native-code SKSE plugin obliterated the input latency problem. Imgui means it can be visually fast. This is why I started with the HUD mod I picked.
 
 ---
 
@@ -414,7 +450,7 @@ Writing this as a native-code SKSE plugin obliterated the input latency problem.
 - reduced branching in the tight loop
 - made all layout decisions at layout load time where possible
 - internal structures are quite different from the serialized player-editable structures as a result
-- mod precalculates and load data for items that will be drawn
+- mod precalculates and loads data for items that will be drawn
 
 ^ This was a lot of fun to do. Not the kind of programming I get a chance to do much of these days.
 
@@ -424,9 +460,9 @@ Writing this as a native-code SKSE plugin obliterated the input latency problem.
 
 I wrote Rust cli tools to help:
 
-- `md2nexus`: a tool converting markdown to NexusMod's BBCode (which is awful)
-- `mcm-meta-helper`: a helper tool for managing translation string files
-- `priority-sync`: a tool for syncing mod order across profiles (for testing with many setups to repro player problems)
+- `md2nexus`: convert markdown to NexusMod's BBCode (which is awful)
+- `mcm-meta-helper`: manage translation string files; UCS-2 is hard to work with
+- `priority-sync`: sync mod order across MO2 profiles; for testing with many setups to repro player problems
 
 ^ All of these are Rust cli tools. The third one is notable because there is a python plugin for Mod Organizer 2 that does this, but it's extremely slow and buggy. I wrote a ridiculously fast tool that does something simpler but easier to make reliable. All of these are in the `ceejbot` github, btw, if you want to see how nice writing CLIs in Rust is, thanks to the `clap` crate.
 
@@ -463,7 +499,7 @@ I wrote Rust cli tools to help:
 - programming with attention to perf & memory use
 - single-process stateful software architecture (not dist systems for once)
 
-^ I have a very particular set of skils, skils I have acquired over a very long career. Skills that make projects like this a joy for me.
+^ I have a very particular set of skils, skils I have acquired over a very long career. Skills that make projects like this a joy for me. I am not a graphic designer, but I faked it here. Visual transitions use easing curves; I did my best to polish everything I touched.
 
 ---
 
@@ -477,7 +513,7 @@ I wrote Rust cli tools to help:
 - Feature development was extremely rapid when I got the design right.
 - Got exactly the HUD mod I wanted.
 
-^ My own standards for software are much higher than that of most of the startups I've worked for. Most often the ticking clock of company debt means that speed is the only thing that matters and even that is evaluated in a very shallow way. Here I could realize that I'd designed myself into a corner that made feature work hard, and then fix it by rewriting. In the end, this is of course faster than not fixing tech debt, but persuading a VC-funded company to do this is always absurdly hard. It's like persuading a video game company that crunch is self-destructive-- the culture doesn't let them learn.
+^ My own standards for software are much higher than that of most of the startups I've worked for. Most often the ticking clock of company debt means that speed is the only thing that matters and even that is evaluated in a very shallow way. Here I could realize that I'd designed myself into a corner that made feature work hard, and then fix it by rewriting. In the end, this is of course faster than not fixing tech debt.
 
 ---
 
