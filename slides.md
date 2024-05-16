@@ -22,7 +22,7 @@
 
 ![fit](./assets/CartSequence_crunched.mov)
 
-^ What's Skyrim? Here is its opening sequence. The wipe goes from vanilla Skyrim to what my current modlist looks like. I think Lokir of Rorikstead is a bit too cute for the character.
+^ What's Skyrim? Here is its opening sequence. The wipe goes from vanilla Skyrim to what my current modlist looks like. I think Lokir of Rorikstead is a bit too cute for the character. https://youtu.be/uvetY44dFIs
 
 ---
 
@@ -201,7 +201,7 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 
 # [fit] **xbyak** jitted assembly
 
-- injecting code at runtime
+- injects code at runtime
 - allows you to hook functions
 - can trampoline from original function to your code and back
 - CLib wraps all this up nicely so I didn't have to learn this
@@ -226,7 +226,7 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 
 ![fit](assets/reverse-engineering.png)
 
-^ This is which parts of the game engine have been reverse engineered. Anything a modder wanted to replace or fix.
+^ This is which parts of the game engine have been reverse engineered. Anything a modder wanted to replace or fix, ever-growing.
 
 ---
 
@@ -260,7 +260,9 @@ I can fix it, right?
 
 # [fit] say hi to **Soulsy HUD**
 
-^ I can no longer imagine playing the game without it.
+![fit](assets/SoulsyHud_2024_demo.mov)
+
+^ I can no longer imagine playing the game without it. https://youtu.be/l4cxzh4-Feg
 
 ---
 
@@ -272,7 +274,14 @@ I can fix it, right?
 
 ---
 
-slide on plugin structure / design here
+# [fit] division of **labor**
+
+- C++: SKSE plugin responsibilities
+- C++: source of game state info
+- C++: render loop
+- Rust: controller for HUD state (all app logic)
+- Rust: layout parsing & settings enforcement
+- Rust: unified logging
 
 ---
 
@@ -315,19 +324,13 @@ This was a surprising challenge to me. I had not done a lot of development on Wi
 # [fit] **Command-line** workflows
 
 - developer tools are better on MacOS & Linux (familiarity bias?)
-- found a Windows terminal app that isn't awful
+- found a Windows terminal app that isn't awful (wezterm)
 - WSL saved me in the end, because I had `bash`
 - forced back to VSCode instead of my preferred editor
 - all the Rust dev can be done on MacOS
 - Rust tests implemented to avoid needing to link to CLib
 
 ^ It was a pretty bad adjustment, to be honest. I really loathe editing code in Visual Studio, which is amazing to me because of how many people use these tools worldwide.
-
----
-
-![justfile-example.png](assets/justfile-example.png)
-
-^ Just, which I've introduced here, was an important part of my workflow. You can provide different versions of a single recipe for diff environments. I automated everything I could automate. CMake could handle some of this, I think, and Powershell 7 the rest, but I am so much more comfortable with bash that I gave in and did all of this with WSL.
 
 ---
 
