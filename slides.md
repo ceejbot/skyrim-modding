@@ -20,9 +20,10 @@
 
 ---
 
-![fit](./assets/CartSequence_crunched.mov)
+![fit](https://youtu.be/uvetY44dFIs)
 
-^ What's Skyrim? Here is its opening sequence. The wipe goes from vanilla Skyrim to what my current modlist looks like. I think Lokir of Rorikstead is a bit too cute for the character. https://youtu.be/uvetY44dFIs
+^ What's Skyrim? Here is its opening sequence. The wipe goes from vanilla Skyrim to what my current modlist looks like. I think Lokir of Rorikstead is a bit too cute for the character.
+^ ![fit](./assets/CartSequence_crunched.mov)
 
 ---
 
@@ -260,9 +261,9 @@ I can fix it, right?
 
 # [fit] say hi to **Soulsy HUD**
 
-![](assets/FastDemo.mov)
+![](https://youtu.be/l4cxzh4-Feg)
 
-^ I can no longer imagine playing the game without it. https://youtu.be/l4cxzh4-Feg
+^ I can no longer imagine playing the game without it.
 
 ---
 
