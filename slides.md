@@ -4,7 +4,7 @@
 
 ## [fit] or, my adventure with Skyrim modding
 
-^ I tried to do a WASM startup last here. We had some fun ideas, but we went to pitch VCs at exactly the moment every single one of them aligned like iron filings near a magnet toward Large Language Models instead of cryptocurrencies. So we folded. I went to sit at home and sulk for a while. I don't enjoy sulking, so I thought, well, why don't I play some video games? Specifically, I went for a video game comfort food. I went for Skyrim.
+^ I tried to do a WASM startup last here. We had some fun ideas, but we went to pitch VCs at exactly the moment every single one of them aligned like iron filings near a magnet toward Large Language Models instead of cryptocurrencies. So we gave up. I went to sit at home and sulk for a while. I don't enjoy sulking, so I thought, well, why don't I play some video games? Specifically, I went for a video game comfort food. I went for Skyrim.
 
 ---
 
@@ -14,7 +14,7 @@
 
 ^ Skyrim is an award-winning 2011 game by Bethesda Game Studio, the fifth in their Elder Scrolls series of role-playing games. It has an amazing sound track, middling graphics, and some fascinating lore. It's been released on PC plus every game console there is. There's a VR version. Game director Todd Howard would release it on your toaster if he could.
 
-^ Skyrim is a region of the larger Elder Scrolls world, roughly equivalent to Scandinavia with a Viking-ish civilization. There's a civil war in progress as a larger human Empire falls apart because of what the player did in the previous two Elder Scrolls games. To make things worse, a dragon shows up and surprises everybody.
+^ Skyrim is a region of the larger Elder Scrolls world, roughly equivalent to Scandinavia with a Viking-ish civilization. There's a civil war in progress as a larger human Empire falls apart because of what the player did in the previous two Elder Scrolls games. To make things worse, a dragon surprises everybody by existing and destroying a town.
 
 ^ It opens kinda like this.
 
@@ -61,7 +61,7 @@ a. slow
 b. buggy
 c. both buggy _and_ slow
 
-Except for one HUD mod that I liked but wanted to modify. So I forked it.
+Except for one HUD mod that worked but wasn't quite right. So I forked it.
 
 ^ Skyrim has a LOT of items in it, and mods add more. You can end up having to dive into menus to eat food, drink potions, and switch weapons a lot. Hotkeys mods make this better. HUD + hotkey mods show you what you've got equipped. I wanted something specific.
 
@@ -235,8 +235,8 @@ This is the basis of UI replacement mods like SkyUI. Todd Howard says SkyUI is h
 - it's a CommonLibSSE mod: C++
 - it uses **imgui** to draw UI not Flash
 - this is why it was fast
-- but other design decisions made it buggy
-- and I had an idea about how to do layout customization
+- but other design decisions made it flakey
+- and I had an idea about how to do menu interactions
 
 I can fix it, right?
 
@@ -260,7 +260,7 @@ I can fix it, right?
 
 # [fit] say hi to **Soulsy HUD**
 
-![fit](assets/SoulsyHud_2024_demo.mov)
+![](assets/FastDemo.mov)
 
 ^ I can no longer imagine playing the game without it. https://youtu.be/l4cxzh4-Feg
 
@@ -287,7 +287,7 @@ I can fix it, right?
 
 # [fit] So how hard **was** it?
 
-It was harder than I thought, but not the way I expected.
+Harder than I thought, but not the way I expected.
 
 - Windows strings were a pain until I understood them
 - Skyrim internals are not always sensible
@@ -328,7 +328,7 @@ This was a surprising challenge to me. I had not done a lot of development on Wi
 - WSL saved me in the end, because I had `bash`
 - forced back to VSCode instead of my preferred editor
 - all the Rust dev can be done on MacOS
-- Rust tests implemented to avoid needing to link to CLib
+- implemented Rust tests to avoid needing to link to CLib
 
 ^ It was a pretty bad adjustment, to be honest. I really loathe editing code in Visual Studio, which is amazing to me because of how many people use these tools worldwide.
 
@@ -376,7 +376,7 @@ Exactly as good as advertised.
 - generates bindings for the functions you want on either side
 - C++ can call Rust & vice versa
 - not as complete as `bindgen`
-- `char*` not supported, for example
+- `char*` not supported, for example (impossible to make safe)
 - but great interop for utf8 strings and vectors
 
 ---
@@ -391,22 +391,25 @@ Let's look at some code briefly!
 
 # [fit] plugins could be **100% Rust**
 
-Currently, Soulsy is 68.5% Rust. Theoretically, I could reduce the C++ down to Rust bindings to CommonLibSSE-NG and the SKSE plugin entry point, plus some xbyak glue.
-
+- currently 68.5% Rust
+- official Rust bindings for nearly all Windows APIs
 - **bindgen** is the path here
+- would need to learn xbyak
 - CLib is a moving target
 - I got a job instead of diving into this
 - gotta have a budget for graphics cards, you know?
 
-^ Microsoft provides Rust bindings for nearly all of their APIs these days.
+^ Theoretically, I could reduce the C++ down to Rust bindings to CommonLibSSE-NG and the SKSE plugin entry point, plus some xbyak glue. Imgui has Rust bindings. DX11 has Rust bindings, so I can create textures for it. The way I chose was the least work-- I could focus on the application itself.
 
 ---
 
-# [fit] a few major **reworks** along the way
+# [fit] **reworks** along the way
 
 I found myself having persistent trouble with some design decisions.
 
-- careful flowcharting of what a cycle advance does when two-handed weapon is equipped; could handle grip-switch mods easily once I got this right
+- made some messes initially with cycle advancing
+- careful work documenting how next-weapon decisions are made
+- could handle grip-switch mods easily once I got this right
 - loading and rasterizing svgs
 - categorizing the many, many mod-added items
 
@@ -471,6 +474,15 @@ I wrote Rust cli tools to help:
 
 ---
 
+# [fit] **leveled up** as a Rust programmer
+
+- extremely comfortable with the language now
+- using the type system in more advanced ways (generic associated types, e.g.)
+- appreciating more how type systems improve my data design thinking
+- thinking about lifetimes improved my C++
+
+---
+
 # [fit] the features I **wanted**
 
 - shouts & powers cycle
@@ -494,7 +506,7 @@ I wrote Rust cli tools to help:
 
 ---
 
-# [fit] got to use nearly my **full skillset**
+# [fit] got to use **many skills**
 
 - product design
 - UX design & writing
@@ -525,6 +537,7 @@ I wrote Rust cli tools to help:
 - so much! Skyrim, modern C++, that I can still learn fast when I need to
 - Rust > C++ (but they go well together)
 - Windows needs a great text editor
+- Skyrim is a platform for focused game dev
 - Skyrim did in fact fix my bad mood
 
 ---
