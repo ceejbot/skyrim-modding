@@ -13,8 +13,6 @@ My goals are:
 - talk about how to use Rust & C++ in the same project
 - leave people with pointers to resources to learn more
 
-The talk is not yet complete as of the posting of this repo, but it's getting close.
-
 ## Slides
 
 [slides.md](./slides.md) contains the slides in Markdown format for use in [Deckset](https://www.deckset.com). [skyrim-modding.pdf](./skyrim-modding.pdf) has the slides in rendered format.
